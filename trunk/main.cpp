@@ -6,6 +6,7 @@
 #include "include/inspi2cdevice.hpp"
 
 #include <QTimer>
+#include <QThread>
 
 void testGPIOLib()
 {
@@ -74,12 +75,6 @@ void testGPIOLib()
 void testI2clib()
 {
 
-}
-
-int main(int argc, char *argv[])
-{
-    QCoreApplication a(argc, argv);
-
     const int SCRATCH_REG = 0x1b;
 
     QTimer *pTimer = new QTimer();
@@ -101,6 +96,51 @@ int main(int argc, char *argv[])
     });
 
     pTimer->start(2000);
+}
+
+int main(int argc, char *argv[])
+{
+    QCoreApplication a(argc, argv);
+
+    qDebug() << "create i2c accelerometer";
+    // create the accelerometer
+    InspI2CDevice accel(1, 0x4c);
+
+    qDebug() << "init device to i2c, not spi";
+    // init the device to i2c
+    MEMSIC::tRegFeatureRegister1 i2cFeature;
+    i2cFeature.i2cEn = 1;
+    accel.writeByte(MEMSIC::eREG_FEATURE1, i2cFeature.value);
+
+    qDebug() << "do the three register init";
+    int initReg = accel.readByte(MEMSIC::eREG_INIT1);
+    qDebug() << "  original init reg " << hex << initReg;
+    accel.writeByte(MEMSIC::eREG_INIT1, 0x42);
+    // read the reg again after a short period
+    QThread::msleep(50);
+    initReg = accel.readByte(MEMSIC::eREG_INIT1);
+    qDebug() << "  init reg after init " << hex << initReg;
+
+    qDebug() << "  init the other inits to 0";
+    accel.writeByte(MEMSIC::eREG_INIT2, 0x00);
+    accel.writeByte(MEMSIC::eREG_INIT3, 0x00);
+
+    qDebug() << "try to read some registers";
+
+    for (int i = 0 ; i < 50; i++)
+    {
+        MEMSIC::tRegAxis x;
+        x.lsb = accel.readByte(MEMSIC::eREG_XOUT_LSB);
+        x.msb = accel.readByte(MEMSIC::eREG_XOUT_MSB);
+
+        qDebug() << "x axis = " << x.value;
+
+        QThread::msleep(100);
+
+    }
+
+
+
 
     return a.exec();
 }

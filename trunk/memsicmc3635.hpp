@@ -3,17 +3,17 @@
 
 #include <QObject>
 #include "memsicregisters.hpp"
+#include "include/inspi2cdevice.hpp"
 
 class MemsicMC3635
+: public InspI2CDevice
 {
 public:
-    MemsicMC3635();
+    MemsicMC3635(int i2cbus, int i2cAddr);
 
 private:
 
     void initDevice();
-    void i2cWrite(unsigned char addr, unsigned char val);
-    int i2cRead(unsigned char addr);
 
 };
 

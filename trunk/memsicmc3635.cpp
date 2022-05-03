@@ -15,8 +15,11 @@ namespace
 
 /**
  * @brief MemsicMC3635::MemsicMC3635 - ctor
+ * @param i2cbus - i2c bus number
+ * @param i2cAddr - i2c address
  */
-MemsicMC3635::MemsicMC3635()
+MemsicMC3635::MemsicMC3635(int i2cbus, int i2cAddr)
+: InspI2CDevice(i2cbus, i2cAddr)
 {
 
 }
@@ -29,36 +32,18 @@ void MemsicMC3635::initDevice()
     // host must set the mode to i2c
     MEMSIC::tRegFeatureRegister1 i2cFeature;
     i2cFeature.i2cEn = 1;
-    i2cWrite(MEMSIC::eREG_FEATURE1, i2cFeature.value);
+    writeByte(MEMSIC::eREG_FEATURE1, i2cFeature.value);
 
     // host must write in 0x42 upon power on
-    i2cWrite(MEMSIC::eREG_INIT1, eINIT_SW_START);
+    writeByte(MEMSIC::eREG_INIT1, eINIT_SW_START);
 
     // host must write in 0x00
-    i2cWrite(MEMSIC::eREG_INIT3, 0x00);
+    writeByte(MEMSIC::eREG_INIT3, 0x00);
 
     // host must write in 0x00
-    i2cWrite(MEMSIC::eREG_INIT2, 0x00);
+    writeByte(MEMSIC::eREG_INIT2, 0x00);
 
     // set the rate ?
-}
-
-/**
- * @brief MemsicMC3635::i2cWrite - write the value to the given address
- */
-void MemsicMC3635::i2cWrite(unsigned char addr, unsigned char val)
-{
-    Q_UNUSED(addr);
-    Q_UNUSED(val);
-}
-
-/**
- * @brief MemsicMC3635::i2cRead - read the register at the given address
- */
-int MemsicMC3635::i2cRead(unsigned char addr)
-{
-    Q_UNUSED(addr);
-    return 0;
 }
 
 
