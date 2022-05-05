@@ -75,14 +75,22 @@ void UIUController::stop()
 void UIUController::onUpdateAngle()
 {
     // read y & z axis
-    int y = mpSensor->getYSensor();
-    int z = mpSensor->getZSensor();
+    auto y = mpSensor->getYSensor();
+    auto z = mpSensor->getZSensor();
 
-    // convert to degrees
-    double angle = atan2(y, z) * _180_OVER_PI;
+    if (y.i2cResp != INSP_I2C_DEVICE::eERROR_NONE  || z.i2cResp != INSP_I2C_DEVICE::eERROR_NONE)
+    {
+        // most likely z axis has the same error
+        emit updateI2CError(y.i2cResp);
+    }
+    else
+    {
+        // convert to degrees
+        double angle = atan2(y.axisData, z.axisData) * _180_OVER_PI;
 
-    // send out update
-    emit updateAngle(angle);
+        // send out update
+        emit updateAngle(angle);
+    }
 }
 
 /**

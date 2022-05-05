@@ -59,8 +59,15 @@ public:
 signals:
     /**
      * @brief updateAngle - signal to provide the updated angle
+     * @param angle - angle in degrees
      */
     void updateAngle(double angle);
+
+    /**
+     * @brief updateI2CError - provide i2c errors if any
+     * @param err - error code
+     */
+    void updateI2CError(int err);
 
 private slots:
     /**

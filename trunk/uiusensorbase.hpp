@@ -4,6 +4,23 @@
 #include <QObject>
 #include "include/inspi2cdevice.hpp"
 
+namespace INSP_UIU_SENSOR
+{
+    /*
+     * Accelerometer axis data is often 16 bit, 2s complement. To ensure i2c errors can be captured
+     * This data type allows the sensor readings to capture the 16bit data & i2c errors.
+     */
+    union tAxisReading
+    {
+        int value;
+        struct
+        {
+            short i2cResp;
+            short axisData;
+        };
+    };
+}
+
 /**
  * @brief The UIUSensorBase class - base class for Up-Is-Up sensors
  */
@@ -32,17 +49,17 @@ public:
     /**
      * @brief getXSensor - provide the x sensor reading
      */
-    virtual int getXSensor() = 0;
+    virtual INSP_UIU_SENSOR::tAxisReading getXSensor() = 0;
 
     /**
      * @brief getYSensor - provide the y sensor reading
      */
-    virtual int getYSensor() = 0;
+    virtual INSP_UIU_SENSOR::tAxisReading getYSensor() = 0;
 
     /**
      * @brief getZSensor - provide the z sensor reading
      */
-    virtual int getZSensor() = 0;
+    virtual INSP_UIU_SENSOR::tAxisReading getZSensor() = 0;
 };
 
 #endif // UIUSENSORBASE_HPP

@@ -87,24 +87,24 @@ public:
     /**
      * @brief getXSensor - provide the x sensor reading
      */
-    int getXSensor();
+    INSP_UIU_SENSOR::tAxisReading getXSensor();
 
     /**
      * @brief getYSensor - provide the y sensor reading
      */
-    int getYSensor();
+    INSP_UIU_SENSOR::tAxisReading getYSensor();
 
     /**
      * @brief getZSensor - provide the z sensor reading
      */
-    int getZSensor();
+    INSP_UIU_SENSOR::tAxisReading getZSensor();
 
 private:
 
     /**
      * @brief getSensor - provide a sensor reading from the provided LSB/MSB registers
      */
-    int getSensor(MEMSIC::eREGISTERS lsbReg, MEMSIC::eREGISTERS msbReg);
+    INSP_UIU_SENSOR::tAxisReading getSensor(MEMSIC::eREGISTERS lsbReg, MEMSIC::eREGISTERS msbReg);
 
 };
 

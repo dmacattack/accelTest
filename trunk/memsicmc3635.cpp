@@ -189,7 +189,7 @@ MEMSIC::tRegRangeControl MemsicMC3635::getRange()
 /**
  * @brief MemsicMC3635::getXSensor - provide the x sensor reading
  */
-int MemsicMC3635::getXSensor()
+INSP_UIU_SENSOR::tAxisReading MemsicMC3635::getXSensor()
 {
     return getSensor(MEMSIC::eREG_XOUT_LSB, MEMSIC::eREG_XOUT_MSB);
 }
@@ -197,7 +197,7 @@ int MemsicMC3635::getXSensor()
 /**
  * @brief MemsicMC3635::getYSensor - provide the y sensor reading
  */
-int MemsicMC3635::getYSensor()
+INSP_UIU_SENSOR::tAxisReading MemsicMC3635::getYSensor()
 {
     return getSensor(MEMSIC::eREG_YOUT_LSB, MEMSIC::eREG_YOUT_MSB);
 }
@@ -205,7 +205,7 @@ int MemsicMC3635::getYSensor()
 /**
  * @brief MemsicMC3635::getZSensor - provide the z sensor reading
  */
-int MemsicMC3635::getZSensor()
+INSP_UIU_SENSOR::tAxisReading MemsicMC3635::getZSensor()
 {
     return getSensor(MEMSIC::eREG_ZOUT_LSB, MEMSIC::eREG_ZOUT_MSB);
 }
@@ -213,10 +213,30 @@ int MemsicMC3635::getZSensor()
 /**
  * @brief MemsicMC3635::getSensor - provide a sensor reading from the provided LSB/MSB registers
  */
-int MemsicMC3635::getSensor(MEMSIC::eREGISTERS lsbReg, MEMSIC::eREGISTERS msbReg)
+INSP_UIU_SENSOR::tAxisReading MemsicMC3635::getSensor(MEMSIC::eREGISTERS lsbReg, MEMSIC::eREGISTERS msbReg)
 {
-    MEMSIC::tRegAxis axis;
-    axis.lsb = readByte(lsbReg);
-    axis.msb = readByte(msbReg);
-    return axis.value;
+    INSP_UIU_SENSOR::tAxisReading reading;
+    reading.i2cResp = INSP_I2C_DEVICE::eERROR_NONE;
+
+    // read the lsb/msb
+    int lsb = readByte(lsbReg);
+    int msb = readByte(msbReg);
+    if (lsb < 0)
+    {
+        reading.i2cResp = lsb;
+    }
+    else if (msb < 0)
+    {
+        reading.i2cResp = msb;
+    }
+    else
+    {
+        // add the accelerometer data if no i2c errors
+        MEMSIC::tRegAxis axis;
+        axis.lsb = lsb;
+        axis.msb = msb;
+        reading.axisData = axis.value;
+    }
+
+    return reading;
 }
