@@ -82,6 +82,14 @@ namespace MEMSIC
         eRANGE_12G = 0x04  // +/- 12g
     };
 
+    // the power modes defined in register 0x1C
+    enum eACCELEROMETER_POWER_MODE
+    {
+        eLOW_POWER = 0x00,
+        eULTRA_LOW_POWER = 0x03,
+        ePRECISION_MODE = 0x04
+    };
+
     // extended status register 1 (0x00)
     union tRegExtendedStatus1
     {
@@ -303,7 +311,7 @@ namespace MEMSIC
 
     // init register 1 (0x0F) - bitvector N/A
 
-    // mode control register 2 (0x10)
+    // mode control register (0x10)
     union tRegModeControl
     {
         unsigned char value;
@@ -342,7 +350,9 @@ namespace MEMSIC
         }
     };
 
-    // TODO 0x11 -> 0x14
+    // rate control register (0x11) - bitvector N/A
+
+    // TODO 0x12 -> 0x14
 
     // mode control register 2 (0x15)
     union tRegRangeControl
@@ -352,7 +362,7 @@ namespace MEMSIC
         {
             unsigned char resolution : 3; // b0:2
             unsigned char resvd      : 1; // b3
-            unsigned char range      : 1; // b4:6
+            unsigned char range      : 3; // b4:6
             unsigned char resvd2     : 1; // b7
         };
 
@@ -383,6 +393,42 @@ namespace MEMSIC
     // init register 3 (0x1A) - bitvector N/A
 
     // scratch pad register (0x1B) - bitvector N/A
+
+    // power mode control register (0x1C)
+    union tRegPowerModeControl
+    {
+        unsigned char value;
+        struct
+        {
+            unsigned char csWakePowerMode  : 3; // b0:2
+            unsigned char resvd            : 1; // b3
+            unsigned char sniffPowerMode   : 3; // b4:6
+            unsigned char spiHiSpeedEn     : 1; // b7
+        };
+
+        // should be printed with qDebug().noquote()
+        QString toString()
+        {
+            QString csStr = (csWakePowerMode == eLOW_POWER       ? "low power"       :
+                            (csWakePowerMode == eULTRA_LOW_POWER ? "ultra low power" :
+                            (csWakePowerMode == ePRECISION_MODE  ? "precision"       : "???" )));
+
+            QString spStr = (csWakePowerMode == eLOW_POWER       ? "low power"       :
+                            (csWakePowerMode == eULTRA_LOW_POWER ? "ultra low power" :
+                            (csWakePowerMode == ePRECISION_MODE  ? "precision"       : "???" )));
+
+            return QString("register: = 0x%1 \n"
+                           "   cspm       : %2 (%3)\n"
+                           "   spm        : %4 (%5) \n"
+                           "   spi_hs_en  : %6 ")
+                    .arg(value, 1, 16)
+                    .arg(csWakePowerMode)
+                    .arg(csStr)
+                    .arg(sniffPowerMode)
+                    .arg(spStr)
+                    .arg(spiHiSpeedEn);
+        }
+    };
 
 
     // reset register (0x24)

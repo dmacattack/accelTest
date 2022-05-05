@@ -10,7 +10,8 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += main.cpp \
-    memsicmc3635.cpp
+    memsicmc3635.cpp \
+    uiusensorbase.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -27,7 +28,8 @@ HEADERS += \
     memsicmc3635.hpp \
     memsicregisters.hpp \
     include/inspgpio.hpp \
-    include/inspi2cdevice.hpp
+    include/inspi2cdevice.hpp \
+    uiusensorbase.hpp
 
 unix {
     LIBS += -L$$PWD/lib -lInspHardware -li2c
