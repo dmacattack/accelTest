@@ -18,7 +18,12 @@ public:
      */
     UIUSensorBase(int i2cBus, int i2cAddr);
 
-protected:
+    /**
+     * @brief UIUSensorBase - dtor
+     */
+    virtual ~UIUSensorBase() {}
+
+public:
     /**
      * @brief initDevice - sensor specific initialization
      */

@@ -22,7 +22,7 @@ public:
     /**
      * @brief ~MemsicMC3635 - dtor
      */
-    virtual ~MemsicMC3635() {}
+    ~MemsicMC3635() {}
 
     /**
      * @brief initDevice - reset & init the memsic mc3635 sensor for reading uiu angles
