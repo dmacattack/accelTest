@@ -67,7 +67,8 @@ bool NXPMMA8652::initDevice()
  */
 INSP_UIU_SENSOR::tAxisReading NXPMMA8652::getXSensor()
 {
-    // the NXP sensor requires reading all the axises in sequence
+    // the NXP sensor has an auto incrementing address.
+    // therefore requires reading all the axises in sequence
     mXAxis.clear();
     mYAxis.clear();
     mZAxis.clear();
@@ -135,7 +136,6 @@ INSP_UIU_SENSOR::tAxisReading NXPMMA8652::getYSensor()
 {
     if (mSensorStatus.yStatusReady == false)
     {
-        qWarning() << "refreshing sensors since x was not read yet"; // TODO remove
         // refresh the sensors
         getXSensor();
     }
@@ -153,7 +153,6 @@ INSP_UIU_SENSOR::tAxisReading NXPMMA8652::getZSensor()
 {
     if (mSensorStatus.zStatusReady == false)
     {
-        qWarning() << "refreshing sensors since x was not read yet"; // TODO remove
         // refresh the sensors
         getXSensor();
     }

@@ -35,6 +35,33 @@ namespace NXP_MMA8652
             zStatusReady = false;
         }
     };
+
+    // fifo setup register 0x09
+    union tRegFifoSetup
+    {
+        unsigned char value;
+        struct
+        {
+            unsigned char fifoWatermark : 6; // b0-5
+            unsigned char fifoMode      : 2; // b6-7
+        };
+
+        // should be printed with qDebug().noquote()
+        QString toString()
+        {
+            QString modeStr = (fifoMode == 0x00   ? "FIFO disabled"                  :
+                              (fifoMode == 0x01   ? "FIFO circ buffer - discard old" :
+                              (fifoMode == 0x10   ? "FIFO circ buffer - discard new" :
+                              (fifoMode == 0x11   ? "FIFO trigger mode"              : "???" ))));
+
+            return QString("register: = 0x%1 \n"
+                           "   mode        : %2 \n"
+                           "   watermark   : %3 ")
+                    .arg(value, 1, 16)
+                    .arg(modeStr)
+                    .arg(fifoWatermark);
+        }
+    };
 }
 
 /**

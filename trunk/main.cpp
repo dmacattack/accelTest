@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
 
     qDebug() << "create i2c accelerometer";
 
-    UIUController controller(INSP_UIU::eSENSOR_MEMSIC_MC3635, 1);
+    UIUController controller(INSP_UIU::eSENSOR_NXP_MMA8652, 1);
 
     QObject::connect(&controller, &UIUController::updateAngle, [&](double angle)
     {
