@@ -18,6 +18,25 @@ namespace INSP_UIU_SENSOR
             short i2cResp;
             short axisData;
         };
+
+        // default ctor
+        tAxisReading()
+        {
+            clear();
+        }
+
+        // clear function
+        void clear()
+        {
+            set(INSP_I2C_DEVICE::eERROR_NONE, 0);
+        }
+
+        // setter function
+        void set(short i2cResp, short axisData)
+        {
+            this->i2cResp = i2cResp;
+            this->axisData = axisData;
+        }
     };
 }
 
@@ -44,7 +63,7 @@ public:
     /**
      * @brief initDevice - sensor specific initialization
      */
-    virtual void initDevice() = 0;
+    virtual bool initDevice() = 0;
 
     /**
      * @brief getXSensor - provide the x sensor reading

@@ -1,11 +1,14 @@
 #include "uiucontroller.hpp"
 #include <QDebug>
-#include "memsicmc3635.hpp"
 #include <QtMath>
+#include "memsicmc3635.hpp"
+#include "nxpmma8652.hpp"
 
 // anonymous namespace
 namespace
 {
+    const quint8 MMA8652_I2C_ADDRESS = 0x1d;
+    const quint8 MC3535_I2C_ADDRESS  = 0x4c;
     const double _180_OVER_PI        = 57.29578;
 }
 
@@ -13,15 +16,14 @@ namespace
  * @brief UIUController - ctor
  * @param sensor - sensor type
  * @param i2cBus - i2c bus number
- * @param i2cAddr - i2c address
  * @param pollMs(optional) - poll interval for the sensor. default = DEFAULT_POLL_INTERVAL
  */
-UIUController::UIUController(INSP_UIU::eSENSOR_TYPE sensor, int i2cBus, int i2cAddr, int pollMs)
+UIUController::UIUController(INSP_UIU::eSENSOR_TYPE sensor, int i2cBus, int pollMs)
 : mpSensor(NULL)
 , mpPollTimer(new QTimer())
 {
     // set sensor details
-    setSensorType(sensor, i2cBus, i2cAddr);
+    setSensorType(sensor, i2cBus);
 
     // set poll interval
     setPollInterval(pollMs);
@@ -51,13 +53,18 @@ void UIUController::setPollInterval(int ms)
 /**
  * @brief start - start acquiring samples
  */
-void UIUController::start()
+bool UIUController::start()
 {
     // init the sensor
-    mpSensor->initDevice();
+    bool init = mpSensor->initDevice();
 
-    // start the poll timer
-    mpPollTimer->start();
+    if (init)
+    {
+        // start the poll timer
+        mpPollTimer->start();
+    }
+
+    return init;
 }
 
 /**
@@ -97,11 +104,15 @@ void UIUController::onUpdateAngle()
  * @brief setSensorType - set the sensor type
  * @param sensor - sensor type
  */
-void UIUController::setSensorType(INSP_UIU::eSENSOR_TYPE sensor, int i2cBus, int i2cAddr)
+void UIUController::setSensorType(INSP_UIU::eSENSOR_TYPE sensor, int i2cBus)
 {
     if (sensor == INSP_UIU::eSENSOR_MEMSIC_MC3635)
     {
-        mpSensor = new MemsicMC3635(i2cBus, i2cAddr);
+        mpSensor = new MemsicMC3635(i2cBus, MC3535_I2C_ADDRESS);
+    }
+    else if (sensor == INSP_UIU::eSENSOR_NXP_MMA8652)
+    {
+        mpSensor = new NXPMMA8652(i2cBus, MMA8652_I2C_ADDRESS);
     }
     else
     {

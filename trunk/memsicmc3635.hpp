@@ -1,7 +1,6 @@
 #ifndef MEMSICMC3635_HPP
 #define MEMSICMC3635_HPP
 
-#include <QObject>
 #include "memsicregisters.hpp"
 #include "uiusensorbase.hpp"
 
@@ -27,7 +26,7 @@ public:
     /**
      * @brief initDevice - reset & init the memsic mc3635 sensor for reading uiu angles
      */
-    void initDevice();
+    bool initDevice();
 
     /**
      * @brief reset - reset the sensor.

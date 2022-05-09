@@ -30,10 +30,9 @@ public:
      * @brief UIUController - ctor
      * @param sensor - sensor type
      * @param i2cBus - i2c bus number
-     * @param i2cAddr - i2c address
      * @param pollMs(optional) - poll interval for the sensor. default = DEFAULT_POLL_INTERVAL
      */
-    UIUController(INSP_UIU::eSENSOR_TYPE sensor, int i2cBus, int i2cAddr, int pollMs = INSP_UIU::DEFAULT_POLL_INTERVAL);
+    UIUController(INSP_UIU::eSENSOR_TYPE sensor, int i2cBus, int pollMs = INSP_UIU::DEFAULT_POLL_INTERVAL);
 
     /**
      * @brief UIUController - dtor
@@ -49,7 +48,7 @@ public:
     /**
      * @brief start - start acquiring samples
      */
-    void start();
+    bool start();
 
     /**
      * @brief stop - stop acquiring samples
@@ -80,9 +79,8 @@ private:
      * @brief setSensorType - set the sensor type
      * @param sensor - sensor type
      * @param i2cBus - i2c bus number
-     * @param i2cAddr - i2c address
      */
-    void setSensorType(INSP_UIU::eSENSOR_TYPE sensor, int i2cBus, int i2cAddr);
+    void setSensorType(INSP_UIU::eSENSOR_TYPE sensor, int i2cBus);
 
 private:
     UIUSensorBase *mpSensor;

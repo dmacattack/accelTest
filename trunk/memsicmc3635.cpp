@@ -29,7 +29,7 @@ MemsicMC3635::MemsicMC3635(int i2cBus, int i2cAddr)
 /**
  * @brief MemsicMC3635::initDevice - reset & init the memsic mc3635 sensor for reading uiu angles
  */
-void MemsicMC3635::initDevice()
+bool MemsicMC3635::initDevice()
 {
     // reset the device to ensure the correct settings
     reset();
@@ -47,6 +47,9 @@ void MemsicMC3635::initDevice()
     setRange(MEMSIC::eRES_12BITS, MEMSIC::eRANGE_2G);
     // set the mode
     setMode(MEMSIC::eMODE_SNIFF);
+
+    // status return if the mode is set
+    return (getMode().mode == MEMSIC::eMODE_SNIFF);
 }
 
 /**
